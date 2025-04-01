@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
     ID: {
-        type: Int,
+        type: Number,
         required: true
     },
     Événement: {
@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema({
         required: true
     },
     Année: {
-        type: Int,
+        type: Number,
         required: true
     },
     Catégorie: {
