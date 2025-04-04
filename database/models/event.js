@@ -13,7 +13,7 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    Catégorie: {
+    Catégories: {
         type: [String],
         required: true
     },

@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     try {
-        console.log("hello")
         const users = await User.find({})
         console.log(users)
         res.status(200).json({ success: true, data: users})
