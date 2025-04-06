@@ -5,6 +5,7 @@ const connectDB = require("./database/connect");
 
 const userRouter = require("./routes/user.route");
 const eventRouter = require("./routes/event.route"); // Ajouter cette ligne pour les événements
+const insaRouter = require("./routes/insa.route"); // Ajouter cette ligne pour les événements INSA
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.get('/api', (req, res) => {
 
 app.use("/api/users", userRouter);
 app.use("/api/events", eventRouter); // Ajouter cette route
+app.use("/api/events_insa", insaRouter);
+
 
 // Start the server
 app.listen(5000, () => {
