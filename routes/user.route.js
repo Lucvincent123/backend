@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const express = require("express")
 
 
@@ -16,23 +18,60 @@ router.get("/", async (req, res) => {
     }
 })
 
+const bcrypt = require("bcrypt");
+
 router.post("/", async (req, res) => {
-    const user = req.body;
+  const { username, password } = req.body;
 
-    if (!user.username || !user.password) {
-        return res.status(400).json({ success: false, message: "Please provide all fields" })
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: "Champs requis" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, password: hashedPassword });
+
+    await newUser.save();
+    res.status(201).json({ success: true, data: newUser });
+  } catch (error) {
+    console.error("Erreur création user :", error);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+});
+router.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Champs requis" });
     }
-
-    const newUser = new User(user);
-
+  
     try {
-        await newUser.save();
-        res.status(201).json({ success: true, data: newUser })
+      const user = await User.findOne({ username });
+  
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Identifiants invalides" });
+      }
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+  
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: "Mot de passe incorrect" });
+      }
+  
+      // Générer le token JWT
+      const token = jwt.sign(
+        { userId: user._id, username: user.username },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+  
+      res.status(200).json({ success: true, token });
     } catch (error) {
-        console.error("Error in Create User: ", error);
-        res.status(500).json({ success: false, message: "Server error"})
+      console.error("Erreur de connexion :", error);
+      res.status(500).json({ success: false, message: "Erreur serveur" });
     }
-})
+  });
+  
 
 
 
