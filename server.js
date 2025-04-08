@@ -4,23 +4,24 @@ const cors = require("cors");
 const connectDB = require("./database/connect");
 
 const userRouter = require("./routes/user.route");
-const eventRouter = require("./routes/event.route"); // Ajouter cette ligne pour les événements
-const insaRouter = require("./routes/insa.route"); // Ajouter cette ligne pour les événements INSA
+const eventRouter = require("./routes/event.route");
+const insaRouter = require("./routes/insa.route");
+const categoryRoutes = require('./routes/category.route');
 
-const app = express();
+const app = express(); 
 
 app.use(express.json());
 app.use(cors());
 
-// Define routes
+
 app.get('/api', (req, res) => {
     res.send('Welcome to the Express.js Tutorial');
 });
 
 app.use("/api/users", userRouter);
-app.use("/api/events", eventRouter); // Ajouter cette route
+app.use("/api/events", eventRouter);
 app.use("/api/events_insa", insaRouter);
-
+app.use('/api/categories', categoryRoutes);
 
 // Start the server
 app.listen(5000, () => {
